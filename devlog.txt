@@ -1,0 +1,10 @@
+Tuesday (9/29/20)
+Started the C++ project since Mr. Polizano allowed me to use languages other than Java.
+Didn't really make any progress since it was my dad's 50th birthday.
+
+Wednesday (9/30/20)
+Started working in class. First thing I did was translate my handy ReadAndWrite class that I had in Java
+to a C++ class. I finished that pretty easily. Now I'm going to take an object oriented approach to my menu system.
+I started by creating a menu interface, and then proceeded to create the Main Menu class. That's about all I did in
+class. I'm not expecting to do any more work today unfortunately since I have a Calculus quiz tomorrow and a
+physical engineering project due as well.
