@@ -15,10 +15,11 @@ void MainMenu::display()
 		std::cout << "2) Create a new account"<<std::endl;
 }
 
-bool MainMenu::userInteraction()
+bool MainMenu::userInteraction(std::string &choice)
 {
 	std::string userInput;
 	ReadAndWrite::getInputAsString(userInput);
+	choice=userInput;
 	if(userInput!="1"&&userInput!="2")return true;
 	return false;
 }

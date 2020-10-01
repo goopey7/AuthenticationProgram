@@ -13,7 +13,7 @@ public:
 	virtual void display()=0; // fully abstract
 
 	// if the user input is bad, return true. If it's good, return false.
-	virtual bool userInteraction()=0;
+	virtual bool userInteraction(std::string &choice)=0;
 
 };
 

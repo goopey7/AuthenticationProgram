@@ -12,7 +12,7 @@ class MainMenu : MenuInterface
 {
 public:
 	void display() override;
-	bool userInteraction() override;
+	bool userInteraction(std::string &choice) override;
 };
 
 

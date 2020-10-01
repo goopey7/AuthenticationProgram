@@ -12,7 +12,7 @@ void ReadAndWrite::getInputAsString(std::string& input)
 std::vector<std::string>* ReadAndWrite::readFile(std::string inFileName)
 {
 	// read into our database line by line
-	std::vector<std::string>* lines = new std::vector<std::string>;
+	auto lines = new std::vector<std::string>;
 	std::ifstream inFile(inFileName);
 	std::string line;
 	while(std::getline(inFile,line))
@@ -24,7 +24,7 @@ void ReadAndWrite::writeFile(std::vector<std::string>* outFileContents, std::str
 {
 	std::ofstream outFile;
 	outFile.open(outFileName);
-	std::string outString="";
+	std::string outString;
 	for(int i=0;i<outFileContents->size();i++)
 	{
 		outString+=outFileContents->at(i);
