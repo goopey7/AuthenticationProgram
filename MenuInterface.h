@@ -5,6 +5,7 @@
 #ifndef AUTHENTICATIONPROGRAM_MENUINTERFACE_H
 #define AUTHENTICATIONPROGRAM_MENUINTERFACE_H
 #include <iostream>
+#include "ReadAndWrite.h"
 
 class MenuInterface
 {

@@ -2,9 +2,27 @@
 // Created by sam on 29/09/2020.
 //
 
+#include <future>
 #include "MainMenu.h"
 #include "sha256.h"
 #include "GameInstance.h"
+#include "CookieUI.h"
+#ifdef _WIN32_
+#include <Windows.h>
+#define CLEAR_SCREEN system("cls");
+#else
+#include <unistd.h>
+#define CLEAR_SCREEN system("clear");
+#endif
+
+void applyCookiePerSecond(GameInstance* instance)
+{
+	while(!instance->destroyed())
+	{
+		instance->addCookie(instance->getCookieRate());
+		sleep(1);
+	}
+}
 
 int main()
 {
@@ -12,10 +30,11 @@ int main()
 	std::string choice;
 	do
 	{
+		choice="";
 		mainMenu->display();
 	}
 	while (mainMenu->userInteraction(choice));
-	auto database = ReadAndWrite::readFile("database.txt");
+	std::vector<std::string>* database = ReadAndWrite::readFile("database.txt");
 	GameInstance* instance;
 	if(choice=="1")
 	{
@@ -23,6 +42,7 @@ int main()
 		bool bLoginFail=true;
 		do
 		{
+			CLEAR_SCREEN
 			std::string username;
 			std::cout << "Enter username: ";
 			ReadAndWrite::getInputAsString(username);
@@ -54,8 +74,6 @@ int main()
 	}
 	else if(choice=="2")
 	{
-		//TODO: Detect Operating System
-		system("clear");
 		//Create account
 		std::string newAccountName;
 
@@ -63,6 +81,7 @@ int main()
 		bool bDuplicateAccName=false;
 		do
 		{
+			CLEAR_SCREEN
 			bDuplicateAccName=false;
 			std::cout << "Enter in a username for this account: ";
 			ReadAndWrite::getInputAsString(newAccountName);
@@ -96,6 +115,7 @@ int main()
 				std::cout << "ERROR: Passwords do not match\n";
 		}
 		while(confirmedPass!=clearPassword);
+		//TODO: Determine a Salt
 		std::string hashedPass = picosha2::hash256_hex_string(clearPassword);
 		database->push_back(hashedPass);
 		database->push_back("}");
@@ -103,6 +123,59 @@ int main()
 		std::cout << "*** Logging in ***\n";
 		instance = new GameInstance(accIndex,database);
 	}
-	ReadAndWrite::writeFile(database,"database.txt");
+	instance->saveChanges();
+	CookieUI* gameUI = new CookieUI(instance);
+
+	int choiceNum=-1;
+	std::thread tCookiePerSecond(applyCookiePerSecond,instance);
+	while(choiceNum!=CookieUI::Options::Logout)
+	{
+		CLEAR_SCREEN
+		choice="";
+		gameUI->display();
+		choiceNum=-1;
+		if(!gameUI->userInteraction(choice))
+			choiceNum = gameUI->mapInputToEnum(choice);
+		switch(choiceNum)
+		{
+			case CookieUI::Options::Click:
+			{
+				instance->addCookie(instance->getCookieRate());
+				break;
+			}
+			case CookieUI::Options::PurchaseGrandmother:
+			{
+				if(!instance->subtractCookie(8))
+					std::cout << "!! Not Enough Funds !!\n";
+				else
+					instance->addToRate(2.f);
+				break;
+			}
+			case CookieUI::Options::PurchaseGreatGrandmother:
+			{
+				if(!instance->subtractCookie(200))
+					std::cout << "!! Not Enough Funds !!\n";
+				else
+					instance->addToRate(4.f);
+				break;
+			}
+			case CookieUI::Options::PurchaseSuperOven:
+			{
+				if(!instance->subtractCookie(10000000))
+					std::cout << "!! Not Enough Funds !!\n";
+				else
+					instance->addToRate(999.f);
+				break;
+			}
+			case CookieUI::Options::FindFriend:
+			{
+				//...
+				std::cout<<"TODO: Can't find friends yet\n";
+				break;
+			}
+		}
+	}
+	instance->bDestroyed=true;
+	tCookiePerSecond.join();
 	return 0;
 }

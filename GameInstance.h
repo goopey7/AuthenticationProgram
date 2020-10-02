@@ -6,16 +6,27 @@
 #define AUTHENTICATIONPROGRAM_GAMEINSTANCE_H
 #include <iostream>
 #include <vector>
+#include "ReadAndWrite.h"
 
 class GameInstance
 {
 private:
 	int accIndex;
+	std::vector<std::string>* database;
 	int numCookies;
+	float cookieRate;
+	int clickRate;
 public:
-	GameInstance(int _accIndex,std::vector<std::string>* database);
+	bool bDestroyed;
+	GameInstance(int _accIndex,std::vector<std::string>* _database);
 	void addCookie(int amountToAdd);
-	void subtractCookie(int amountToSubtract);
+	bool subtractCookie(int amountToSubtract);
+	void saveChanges();
+	void addToRate(float amountToAdd);
+	int getNumCookies();
+	int getCookieRate();
+	int getCookieClickRate();
+	bool destroyed();
 };
 
 #endif //AUTHENTICATIONPROGRAM_GAMEINSTANCE_H

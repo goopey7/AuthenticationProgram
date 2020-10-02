@@ -8,3 +8,7 @@ to a C++ class. I finished that pretty easily. Now I'm going to take an object o
 I started by creating a menu interface, and then proceeded to create the Main Menu class. That's about all I did in
 class. I'm not expecting to do any more work today unfortunately since I have a Calculus quiz tomorrow and a
 physical engineering project due as well.
+
+Thursday (10/1/20)
+Implemented both creating an account, and logging in. Now I'm going to start programming the actual cookie clicker game
+since it seems like that's what I'm going to do.
