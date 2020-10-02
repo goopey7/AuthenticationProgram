@@ -140,7 +140,7 @@ int main()
 		{
 			case CookieUI::Options::Click:
 			{
-				instance->addCookie(instance->getCookieRate());
+				instance->addCookie(instance->getCookieClickRate());
 				break;
 			}
 			case CookieUI::Options::PurchaseGrandmother:

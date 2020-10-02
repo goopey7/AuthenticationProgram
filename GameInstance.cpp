@@ -76,7 +76,7 @@ void GameInstance::saveChanges()
 	ReadAndWrite::writeFile(database,"database.txt");
 }
 
-int GameInstance::getNumCookies()
+double GameInstance::getNumCookies()
 {
 	return numCookies;
 }

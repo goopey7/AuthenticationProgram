@@ -13,7 +13,7 @@ class GameInstance
 private:
 	int accIndex;
 	std::vector<std::string>* database;
-	int numCookies;
+	double numCookies;
 	float cookieRate;
 	int clickRate;
 public:
@@ -23,7 +23,7 @@ public:
 	bool subtractCookie(int amountToSubtract);
 	void saveChanges();
 	void addToRate(float amountToAdd);
-	int getNumCookies();
+	double getNumCookies();
 	int getCookieRate();
 	int getCookieClickRate();
 	bool destroyed();
