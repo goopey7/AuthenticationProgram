@@ -16,6 +16,12 @@ private:
 	double numCookies;
 	float cookieRate;
 	int clickRate;
+	std::vector<std::string>* following;
+	const int NUM_COOKIE_OFFSET=3;
+	const int COOKIE_RATE_OFFSET=4;
+	const int CLICK_RATE_OFFSET=5;
+	const int FOLLOWING_OFFSET=6;
+	std::vector<std::string>* users;
 public:
 	bool bDestroyed;
 	GameInstance(int _accIndex,std::vector<std::string>* _database);
@@ -24,8 +30,10 @@ public:
 	void saveChanges();
 	void addToRate(float amountToAdd);
 	double getNumCookies();
+	double getNumCookies(std::string user);
 	int getCookieRate();
 	int getCookieClickRate();
+	std::vector<std::string>* getFollowing();
 	bool destroyed();
 };
 
