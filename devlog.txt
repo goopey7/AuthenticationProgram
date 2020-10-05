@@ -22,3 +22,6 @@ Monday (10/5/20)
 Implemented a way to follow users using the program. Previously the usernames had to be manually inserted into the database.
 
 Added a salt to our hashed passwords. It works by first getting the nanoseconds since epoch, and generating a SHA-256 hash from the nanoseconds. In the database, the password line is the first 32 characters of the salt + (the hash of the password+salt) + last 32 characters of the salt. 
+
+I just changed up the way I obfuscate my salt. Now every even character of the database entry is a part of the hashed password.
+Every odd character is part of the salt.

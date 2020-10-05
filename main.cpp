@@ -70,9 +70,16 @@ int main()
 			if(accIndex!=-1)
 			{
 				std::string hashLine=database->at(accIndex+2);
-				// the SHA-256 has is inserted into half of the salt hash.
-				if(hashLine.substr(32,64)==picosha2::hash256_hex_string(password
-				+hashLine.substr(0,32)+hashLine.substr(96)))
+				std::string hash="";
+				std::string salt="";
+				for(int i=0;i<hashLine.length();i++)
+				{
+					if(i%2==0)
+						hash+=hashLine.at(i);
+					else
+						salt+=hashLine.at(i);
+				}
+				if(hash==picosha2::hash256_hex_string(password+salt))
 				{
 					bLoginFail=false;
 					std::cout << "*** Login Success ***\n";
@@ -127,12 +134,23 @@ int main()
 		}
 		while(confirmedPass!=clearPassword);
 		std::string salt = picosha2::hash256_hex_string(std::to_string(getNanosSinceEpoch()));
+		std::string hashedPass = picosha2::hash256_hex_string(clearPassword+salt);
 
-		// obfuscate the salt and the hash
-		std::string hashedPass = salt.substr(0,32)+picosha2::hash256_hex_string(clearPassword+salt)
-				+salt.substr(32);
+		// obfuscate the salt and the hashed password
+		std::string databaseEntry="";
+		int strIndex=0;
+		for(int i=0;i<128;i++)
+		{
+			if(i%2==0)
+				databaseEntry+=hashedPass.at(strIndex);
+			else
+			{
+				databaseEntry+=salt.at(strIndex);
+				strIndex++;
+			}
+		}
 
-		database->push_back(hashedPass);
+		database->push_back(databaseEntry);
 		database->push_back("}");
 		std::cout << "*** Account Created Successfully ***\n";
 		std::cout << "*** Logging in ***\n";
