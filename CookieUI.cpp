@@ -18,8 +18,12 @@ void CookieUI::display()
 	std::cout << "********* Cookies: " << instance->getNumCookies() << std::endl;
 	std::cout << "********* Cookies per second: "<< instance->getCookieRate() << std::endl;
 	std::cout << "********* Cookies per click: "<< instance->getCookieClickRate()<<std::endl;
-	for(std::string user : *instance->getFollowing())
+	if(instance->getFollowing())
+	{
+		for(std::string user : *instance->getFollowing())
 			std::cout << user << ": " << instance->getNumCookies(user) << " cookies\n";
+	}
+
 	std::cout << "Please select one of the following options:\n";
 	std::cout << "1) Click\n";
 	std::cout << "2) Purchase Grandmother - Add 2 Cookies/Sec - 8 Cookies\n";

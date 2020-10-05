@@ -12,9 +12,13 @@ class FindUserUI : MenuInterface
 {
 private:
 	GameInstance* instance;
+	std::vector<std::string>* choices;
+	int numChoices=0;
 public:
+	FindUserUI(GameInstance* _instance);
 	void display() override;
 	bool userInteraction(std::string &choice) override;
+	std::vector<std::string>* getChoices();
 };
 
 

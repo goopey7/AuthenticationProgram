@@ -7,6 +7,8 @@
 #include "sha256.h"
 #include "GameInstance.h"
 #include "CookieUI.h"
+#include "FindUserUI.h"
+
 #ifdef _WIN32_
 #include <Windows.h>
 #define CLEAR_SCREEN system("cls");
@@ -128,6 +130,8 @@ int main()
 
 	int choiceNum=-1;
 	std::thread tCookiePerSecond(applyCookiePerSecond,instance);
+
+	FindUserUI* findUI = new FindUserUI(instance);
 	while(choiceNum!=CookieUI::Options::Logout)
 	{
 		CLEAR_SCREEN
@@ -169,8 +173,14 @@ int main()
 			}
 			case CookieUI::Options::FindFriend:
 			{
-				//...
-				std::cout<<"TODO: Can't find friends yet\n";
+				std::string findUserChoice="";
+				do
+				{
+					findUI->display();
+				}
+				while(findUI->userInteraction(findUserChoice));
+				if(findUserChoice!="")
+					instance->follow(findUserChoice,findUI->getChoices());
 				break;
 			}
 		}

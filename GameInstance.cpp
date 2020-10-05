@@ -9,7 +9,6 @@ GameInstance::GameInstance(int _accIndex,std::vector<std::string>* _database)
 {
 	accIndex=_accIndex;
 	database=_database;
-	following=new std::vector<std::string>;
 	users = new std::vector<std::string>;
 	// if there is no cookie entry in the database
 	if(database->at(accIndex+NUM_COOKIE_OFFSET)=="}")
@@ -48,6 +47,7 @@ GameInstance::GameInstance(int _accIndex,std::vector<std::string>* _database)
 		clickRate=std::stoi(database->at(accIndex+CLICK_RATE_OFFSET).substr(6));
 
 	// if there is no following entry stored in the database
+	following=new std::vector<std::string>;
 	if(database->at(accIndex+FOLLOWING_OFFSET)=="}")
 	{
 		//insert a database entry for cookieRate on the line between the numCookies and the "}"
@@ -56,20 +56,26 @@ GameInstance::GameInstance(int _accIndex,std::vector<std::string>* _database)
 	// parse through each user we are following separated by comma. TODO: Don't allow usernames to have commas
 	else
 	{
-		std::string users=database->at(accIndex+FOLLOWING_OFFSET).substr(8);
-		std::stringstream sStream(users);
-		while(sStream.good()&&users.length()>0)
-		{
-			std::string subStr;
-			std::getline(sStream,subStr,',');
-			following->push_back(subStr);
-		}
+		refreshFollowingList();
 	}
 
 	for(std::string line : *database)
 	{
 		if(line.find("ID:")!=std::string::npos)
 			users->push_back(line.substr(3));
+	}
+}
+
+void GameInstance::refreshFollowingList()
+{
+	following=new std::vector<std::string>;
+	std::string users= database->at(accIndex + FOLLOWING_OFFSET).substr(8);
+	std::stringstream sStream(users);
+	while(sStream.good()&&users.length()>0)
+	{
+		std::string subStr;
+		std::getline(sStream,subStr,',');
+		following->push_back(subStr);
 	}
 }
 
@@ -140,3 +146,50 @@ double GameInstance::getNumCookies(std::string user)
 	}
 	return -1;
 }
+
+std::vector<int>* GameInstance::getAccIndices()
+{
+	std::vector<int>* out=new std::vector<int>;
+	int i=0;
+	for(std::string line : *database)
+	{
+		if(line.find("ID:")!=std::string::npos)
+		{
+			out->push_back(i);
+		}
+		i++;
+	}
+	return out;
+}
+
+std::string GameInstance::getUserName(int index)
+{
+	return database->at(index).substr(3);
+}
+
+int GameInstance::getAccIndex()
+{
+	return accIndex;
+}
+
+void GameInstance::follow(std::string &choice,std::vector<std::string>* choices)
+{
+	try
+	{
+		int index = std::stoi(choice)-1;
+		std::string followLine=database->at(accIndex + FOLLOWING_OFFSET);
+		if(followLine.at(followLine.size()-1)==':')
+			followLine+=choices->at(index);
+		else
+			followLine+=","+choices->at(index);
+		database->at(accIndex+FOLLOWING_OFFSET)=followLine;
+		saveChanges();
+		refreshFollowingList();
+	}
+	catch(...)
+	{
+
+	}
+
+}
+

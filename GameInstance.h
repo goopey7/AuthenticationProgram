@@ -29,12 +29,18 @@ public:
 	bool subtractCookie(int amountToSubtract);
 	void saveChanges();
 	void addToRate(float amountToAdd);
-	double getNumCookies();
+	double getNumCookies(); // get cookies of logged in user
 	double getNumCookies(std::string user);
 	int getCookieRate();
 	int getCookieClickRate();
 	std::vector<std::string>* getFollowing();
+	std::vector<int>* getAccIndices();
 	bool destroyed();
+	std::string getUserName(int index);
+	int getAccIndex();
+	void follow(std::string &choice,std::vector<std::string>* choices);
+
+	void refreshFollowingList();
 };
 
 #endif //AUTHENTICATIONPROGRAM_GAMEINSTANCE_H

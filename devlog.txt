@@ -14,3 +14,9 @@ Implemented both creating an account, and logging in. Now I'm going to start pro
 since it seems like that's what I'm going to do.
 
 I have created a basic cookie clicker game.
+
+Saturday (10/3/20)
+I added the ability to keep track of how many cookies other users have, so that there can be competition.
+
+Monday (10/5/20)
+Implemented a way to follow users using the program. Previously the usernames had to be manually inserted into the database.
