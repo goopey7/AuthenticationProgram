@@ -25,3 +25,6 @@ Added a salt to our hashed passwords. It works by first getting the nanoseconds 
 
 I just changed up the way I obfuscate my salt. Now every even character of the database entry is a part of the hashed password.
 Every odd character is part of the salt.
+
+Added a master role for accounts. Currently there is no difference between a master account and a normal account.
+Next thing to do is to allow the master account to modify the cookies and rates of other accounts.
