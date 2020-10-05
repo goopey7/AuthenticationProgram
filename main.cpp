@@ -26,6 +26,13 @@ void applyCookiePerSecond(GameInstance* instance)
 	}
 }
 
+inline uint64_t getNanosSinceEpoch()
+{
+	std::chrono::time_point<std::chrono::system_clock> ts = std::chrono::system_clock::now();
+	return std::chrono::duration_cast<std::chrono::nanoseconds>(ts.time_since_epoch()).count();
+}
+
+
 int main()
 {
 	MainMenu* mainMenu=new MainMenu;
@@ -62,7 +69,10 @@ int main()
 			}
 			if(accIndex!=-1)
 			{
-				if(database->at(accIndex+2)==picosha2::hash256_hex_string(password))
+				std::string hashLine=database->at(accIndex+2);
+				// the SHA-256 has is inserted into half of the salt hash.
+				if(hashLine.substr(32,64)==picosha2::hash256_hex_string(password
+				+hashLine.substr(0,32)+hashLine.substr(96)))
 				{
 					bLoginFail=false;
 					std::cout << "*** Login Success ***\n";
@@ -107,7 +117,6 @@ int main()
 		ReadAndWrite::getInputAsString(clearPassword);
 
 		// Confirm password
-		bool bPasswordsMatch = false;
 		std::string confirmedPass;
 		do
 		{
@@ -117,8 +126,12 @@ int main()
 				std::cout << "ERROR: Passwords do not match\n";
 		}
 		while(confirmedPass!=clearPassword);
-		//TODO: Determine a Salt
-		std::string hashedPass = picosha2::hash256_hex_string(clearPassword);
+		std::string salt = picosha2::hash256_hex_string(std::to_string(getNanosSinceEpoch()));
+
+		// obfuscate the salt and the hash
+		std::string hashedPass = salt.substr(0,32)+picosha2::hash256_hex_string(clearPassword+salt)
+				+salt.substr(32);
+
 		database->push_back(hashedPass);
 		database->push_back("}");
 		std::cout << "*** Account Created Successfully ***\n";

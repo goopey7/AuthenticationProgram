@@ -66,7 +66,7 @@ GameInstance::GameInstance(int _accIndex,std::vector<std::string>* _database)
 	}
 }
 
-void GameInstance::refreshFollowingList()
+inline void GameInstance::refreshFollowingList()
 {
 	following=new std::vector<std::string>;
 	std::string users= database->at(accIndex + FOLLOWING_OFFSET).substr(8);
