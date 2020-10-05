@@ -5,11 +5,10 @@
 #include <sstream>
 #include "GameInstance.h"
 
-GameInstance::GameInstance(int _accIndex,std::vector<std::string>* _database)
+GameInstance::GameInstance(int _accIndex,std::vector<std::string>* _database,bool _bIsGameMaster)
 {
 	accIndex=_accIndex;
 	database=_database;
-	users = new std::vector<std::string>;
 	// if there is no cookie entry in the database
 	if(database->at(accIndex+NUM_COOKIE_OFFSET)=="}")
 	{
@@ -59,10 +58,18 @@ GameInstance::GameInstance(int _accIndex,std::vector<std::string>* _database)
 		refreshFollowingList();
 	}
 
-	for(std::string line : *database)
+	// if there is no permission entry stored in the database
+	if(database->at(accIndex+PERMISSION_OFFSET)=="}")
 	{
-		if(line.find("ID:")!=std::string::npos)
-			users->push_back(line.substr(3));
+		bIsGameMaster=_bIsGameMaster;
+		//insert a database entry for cookieRate on the line between the numCookies and the "}"
+		database->insert(database->begin()+accIndex+PERMISSION_OFFSET,"master:"
+		+std::to_string(bIsGameMaster));
+	}
+	// parse master status into boolean
+	else
+	{
+		bIsGameMaster=std::stoi(database->at(accIndex+PERMISSION_OFFSET).substr(7));
 	}
 }
 
@@ -191,5 +198,10 @@ void GameInstance::follow(std::string &choice,std::vector<std::string>* choices)
 
 	}
 
+}
+
+bool GameInstance::isGameMaster()
+{
+	return bIsGameMaster;
 }
 

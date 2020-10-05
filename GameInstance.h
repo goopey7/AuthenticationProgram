@@ -21,10 +21,11 @@ private:
 	const int COOKIE_RATE_OFFSET=4;
 	const int CLICK_RATE_OFFSET=5;
 	const int FOLLOWING_OFFSET=6;
-	std::vector<std::string>* users;
+	const int PERMISSION_OFFSET=7;
+	bool bIsGameMaster;
 public:
 	bool bDestroyed;
-	GameInstance(int _accIndex,std::vector<std::string>* _database);
+	GameInstance(int _accIndex,std::vector<std::string>* _database,bool _bIsGameMaster);
 	void addCookie(int amountToAdd);
 	bool subtractCookie(int amountToSubtract);
 	void saveChanges();
@@ -39,8 +40,8 @@ public:
 	std::string getUserName(int index);
 	int getAccIndex();
 	void follow(std::string &choice,std::vector<std::string>* choices);
-
 	void refreshFollowingList();
+	bool isGameMaster();
 };
 
 #endif //AUTHENTICATIONPROGRAM_GAMEINSTANCE_H

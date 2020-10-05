@@ -21,7 +21,8 @@ void applyCookiePerSecond(GameInstance* instance)
 {
 	while(!instance->destroyed())
 	{
-		instance->addCookie(instance->getCookieRate());
+		if(instance->getCookieRate()>0)
+			instance->addCookie(instance->getCookieRate());
 		sleep(1);
 	}
 }
@@ -31,7 +32,6 @@ inline uint64_t getNanosSinceEpoch()
 	std::chrono::time_point<std::chrono::system_clock> ts = std::chrono::system_clock::now();
 	return std::chrono::duration_cast<std::chrono::nanoseconds>(ts.time_since_epoch()).count();
 }
-
 
 int main()
 {
@@ -70,6 +70,8 @@ int main()
 			if(accIndex!=-1)
 			{
 				std::string hashLine=database->at(accIndex+2);
+
+				// Extract the hash and the salt from the database entry
 				std::string hash="";
 				std::string salt="";
 				for(int i=0;i<hashLine.length();i++)
@@ -79,11 +81,12 @@ int main()
 					else
 						salt+=hashLine.at(i);
 				}
+				// verify password
 				if(hash==picosha2::hash256_hex_string(password+salt))
 				{
 					bLoginFail=false;
 					std::cout << "*** Login Success ***\n";
-					instance = new GameInstance(accIndex,database);
+					instance = new GameInstance(accIndex,database,false);
 				}
 			}
 			else
@@ -133,6 +136,18 @@ int main()
 				std::cout << "ERROR: Passwords do not match\n";
 		}
 		while(confirmedPass!=clearPassword);
+
+		do
+		{
+			std::cout << "Make Account a Game Master? (Y/N)\n";
+			ReadAndWrite::getInputAsString(choice);
+		}
+		while (choice!="Y"&&choice!="y"&&choice!="N"&&choice!="n");
+		bool bIsGameMaster;
+		if(choice=="y"||choice=="Y")
+			bIsGameMaster=true;
+		else bIsGameMaster=false;
+
 		std::string salt = picosha2::hash256_hex_string(std::to_string(getNanosSinceEpoch()));
 		std::string hashedPass = picosha2::hash256_hex_string(clearPassword+salt);
 
@@ -154,7 +169,7 @@ int main()
 		database->push_back("}");
 		std::cout << "*** Account Created Successfully ***\n";
 		std::cout << "*** Logging in ***\n";
-		instance = new GameInstance(accIndex,database);
+		instance = new GameInstance(accIndex,database,bIsGameMaster);
 	}
 	instance->saveChanges();
 	CookieUI* gameUI = new CookieUI(instance);

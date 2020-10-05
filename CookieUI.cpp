@@ -15,6 +15,7 @@ void CookieUI::display()
 	std::cout << "*                                  Cookie Clicker                              *"<<std::endl;
 	std::cout << "*                                   Sam Collier                                *"<<std::endl;
 	std::cout << "********************************************************************************"<<std::endl;
+	if(instance->isGameMaster())std::cout<<"Welcome Game Master!\n";
 	std::cout << "********* Cookies: " << instance->getNumCookies() << std::endl;
 	std::cout << "********* Cookies per second: "<< instance->getCookieRate() << std::endl;
 	std::cout << "********* Cookies per click: "<< instance->getCookieClickRate()<<std::endl;
