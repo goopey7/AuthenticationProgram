@@ -9,68 +9,7 @@ GameInstance::GameInstance(int _accIndex,std::vector<std::string>* _database,boo
 {
 	accIndex=_accIndex;
 	database=_database;
-	// if there is no cookie entry in the database
-	if(database->at(accIndex+NUM_COOKIE_OFFSET)=="}")
-	{
-		numCookies=0;
-
-		//insert a database entry for cookies on the line between the account password and the line afterwards
-		database->insert(database->begin()+accIndex+NUM_COOKIE_OFFSET,"cookies:"+std::to_string(numCookies));
-	}
-	// parse the cookie entry into numCookies
-	else
-		numCookies=std::stod(database->at(accIndex+NUM_COOKIE_OFFSET).substr(8));
-
-	// if there is no cookie rate stored in the database
-	if(database->at(accIndex+COOKIE_RATE_OFFSET)=="}")
-	{
-		cookieRate=0.f;
-
-		//insert a database entry for cookieRate on the line between the numCookies and the line afterwards
-		database->insert(database->begin()+accIndex+COOKIE_RATE_OFFSET,"rate:"+std::to_string(cookieRate));
-	}
-	// parse the rate entry into cookieRate
-	else
-		cookieRate=std::stof(database->at(accIndex+COOKIE_RATE_OFFSET).substr(5));
-
-	// if there is no click rate stored in the database
-	if(database->at(accIndex+CLICK_RATE_OFFSET)=="}")
-	{
-		clickRate=1;
-
-		//insert a database entry for cookieRate on the line between the numCookies and the "}"
-		database->insert(database->begin()+accIndex+CLICK_RATE_OFFSET,"click:"+std::to_string(clickRate));
-	}
-	// parse the click entry into clickRate
-	else
-		clickRate=std::stoi(database->at(accIndex+CLICK_RATE_OFFSET).substr(6));
-
-	// if there is no following entry stored in the database
-	following=new std::vector<std::string>;
-	if(database->at(accIndex+FOLLOWING_OFFSET)=="}")
-	{
-		//insert a database entry for cookieRate on the line between the numCookies and the "}"
-		database->insert(database->begin()+accIndex+FOLLOWING_OFFSET,"follows:");
-	}
-	// parse through each user we are following separated by comma. TODO: Don't allow usernames to have commas
-	else
-	{
-		refreshFollowingList();
-	}
-
-	// if there is no permission entry stored in the database
-	if(database->at(accIndex+PERMISSION_OFFSET)=="}")
-	{
-		bIsGameMaster=_bIsGameMaster;
-		//insert a database entry for cookieRate on the line between the numCookies and the "}"
-		database->insert(database->begin()+accIndex+PERMISSION_OFFSET,"master:"
-		+std::to_string(bIsGameMaster));
-	}
-	// parse master status into boolean
-	else
-	{
-		bIsGameMaster=std::stoi(database->at(accIndex+PERMISSION_OFFSET).substr(7));
-	}
+	refreshDatabase(_bIsGameMaster);
 }
 
 inline void GameInstance::refreshFollowingList()
@@ -90,6 +29,7 @@ void GameInstance::addCookie(int amountToAdd)
 {
 	if(amountToAdd>0)
 		numCookies+=amountToAdd;
+	database->at(accIndex+NUM_COOKIE_OFFSET)="cookies:"+std::to_string(numCookies);
 	saveChanges();
 }
 
@@ -107,13 +47,12 @@ bool GameInstance::subtractCookie(int amountToSubtract)
 void GameInstance::addToRate(float amountToAdd)
 {
 	cookieRate+=amountToAdd;
+	database->at(accIndex+COOKIE_RATE_OFFSET)="rate:"+std::to_string(cookieRate);
 	saveChanges();
 }
 
 void GameInstance::saveChanges()
 {
-	database->at(accIndex+3)="cookies:"+std::to_string(numCookies);
-	database->at(accIndex+4)="rate:"+std::to_string(cookieRate);
 	ReadAndWrite::writeFile(database,"database.txt");
 }
 
@@ -203,5 +142,86 @@ void GameInstance::follow(std::string &choice,std::vector<std::string>* choices)
 bool GameInstance::isGameMaster()
 {
 	return bIsGameMaster;
+}
+
+void GameInstance::setCookies(std::string user,double amountToSet)
+{
+	int i=0;
+	for(std::string line : *database)
+	{
+		if(line=="ID:"+user)
+		{
+			database->at(i+NUM_COOKIE_OFFSET)="cookies:"+std::to_string(amountToSet);
+		}
+		i++;
+	}
+	saveChanges();
+	refreshDatabase(bIsGameMaster);
+}
+
+void GameInstance::refreshDatabase(bool _bIsGameMaster)
+{
+	// if there is no cookie entry in the database
+	if(database->at(accIndex+NUM_COOKIE_OFFSET)=="}")
+	{
+		numCookies=0;
+
+		//insert a database entry for cookies on the line between the account password and the line afterwards
+		database->insert(database->begin()+accIndex+NUM_COOKIE_OFFSET,"cookies:"+std::to_string(numCookies));
+	}
+		// parse the cookie entry into numCookies
+	else
+		numCookies=std::stod(database->at(accIndex+NUM_COOKIE_OFFSET).substr(8));
+
+	// if there is no cookie rate stored in the database
+	if(database->at(accIndex+COOKIE_RATE_OFFSET)=="}")
+	{
+		cookieRate=0.f;
+
+		//insert a database entry for cookieRate on the line between the numCookies and the line afterwards
+		database->insert(database->begin()+accIndex+COOKIE_RATE_OFFSET,"rate:"+std::to_string(cookieRate));
+	}
+		// parse the rate entry into cookieRate
+	else
+		cookieRate=std::stof(database->at(accIndex+COOKIE_RATE_OFFSET).substr(5));
+
+	// if there is no click rate stored in the database
+	if(database->at(accIndex+CLICK_RATE_OFFSET)=="}")
+	{
+		clickRate=1;
+
+		//insert a database entry for cookieRate on the line between the numCookies and the "}"
+		database->insert(database->begin()+accIndex+CLICK_RATE_OFFSET,"click:"+std::to_string(clickRate));
+	}
+		// parse the click entry into clickRate
+	else
+		clickRate=std::stoi(database->at(accIndex+CLICK_RATE_OFFSET).substr(6));
+
+	// if there is no following entry stored in the database
+	following=new std::vector<std::string>;
+	if(database->at(accIndex+FOLLOWING_OFFSET)=="}")
+	{
+		//insert a database entry for cookieRate on the line between the numCookies and the "}"
+		database->insert(database->begin()+accIndex+FOLLOWING_OFFSET,"follows:");
+	}
+		// parse through each user we are following separated by comma. TODO: Don't allow usernames to have commas
+	else
+	{
+		refreshFollowingList();
+	}
+
+	// if there is no permission entry stored in the database
+	if(database->at(accIndex+PERMISSION_OFFSET)=="}")
+	{
+		bIsGameMaster=_bIsGameMaster;
+		//insert a database entry for cookieRate on the line between the numCookies and the "}"
+		database->insert(database->begin()+accIndex+PERMISSION_OFFSET,"master:"
+																	  +std::to_string(bIsGameMaster));
+	}
+		// parse master status into boolean
+	else
+	{
+		bIsGameMaster=std::stoi(database->at(accIndex+PERMISSION_OFFSET).substr(7));
+	}
 }
 

@@ -31,24 +31,26 @@ void CookieUI::display()
 	std::cout << "3) Purchase Great Grandmother - Add 4 Cookies/Sec - 200 cookies\n";
 	std::cout << "4) Purchase Super Oven - Add 999 Cookies/Sec - 10000000 cookies\n";
 	std::cout << "5) Find User\n";
-	std::cout << "6) Refresh\n";
+	std::cout << "6) Send Cookies\n";
+	std::cout << "7) Refresh\n";
+	if(instance->isGameMaster())
+	{
+		std::cout << "8) Set cookies for user\n";
+	}
 	std::cout << "0) Logout\n";
 }
 
 bool CookieUI::userInteraction(std::string &choice)
 {
-	std::string userInput;
-	ReadAndWrite::getInputAsString(userInput);
-	choice=userInput;
-	if(choice!="0"&&choice!="1"&&choice!="2"&&choice!="3"&&choice!="4"&&choice!="5"&&choice!="6")
-		return true;
+	ReadAndWrite::getInputAsString(choice);
 	return false;
 }
 
 int CookieUI::mapInputToEnum(std::string &choice)
 {
 	int numChoice=-1;
-	if(choice=="0"||choice=="1"||choice=="2"||choice=="3"||choice=="4"||choice=="5"||choice=="6")
+	if(choice=="0"||choice=="1"||choice=="2"||choice=="3"||choice=="4"||choice=="5"||choice=="6"||
+	choice=="7"||(instance->isGameMaster()&&choice=="8"))
 		numChoice=std::stoi(choice);
 	return numChoice;
 }

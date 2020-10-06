@@ -42,6 +42,8 @@ public:
 	void follow(std::string &choice,std::vector<std::string>* choices);
 	void refreshFollowingList();
 	bool isGameMaster();
+	void setCookies(std::string user,double amountToSet);
+	void refreshDatabase(bool _bIsGameMaster);
 };
 
 #endif //AUTHENTICATIONPROGRAM_GAMEINSTANCE_H

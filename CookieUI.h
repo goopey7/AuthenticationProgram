@@ -25,7 +25,10 @@ public:
 		PurchaseGrandmother,
 		PurchaseGreatGrandmother,
 		PurchaseSuperOven,
-		FindFriend,
+		FindUser,
+		SendCookies,
+		Refresh,
+		SetCookies,
 		INVALID
 	};
 };

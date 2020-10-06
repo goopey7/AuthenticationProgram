@@ -27,6 +27,7 @@ void applyCookiePerSecond(GameInstance* instance)
 	}
 }
 
+//inline functions don't clog up the stack, instead the compiler just inserts the definition of the function when called
 inline uint64_t getNanosSinceEpoch()
 {
 	std::chrono::time_point<std::chrono::system_clock> ts = std::chrono::system_clock::now();
@@ -121,7 +122,7 @@ int main()
 		int accIndex = database->size();
 		database->push_back(newAccountName);
 		database->push_back("{");
-		// Ask for a password
+		// Ask for a password TODO Check password complexity
 		std::cout << "Enter in a password for this account: ";
 		std::string clearPassword;
 		ReadAndWrite::getInputAsString(clearPassword);
@@ -217,7 +218,7 @@ int main()
 					instance->addToRate(999.f);
 				break;
 			}
-			case CookieUI::Options::FindFriend:
+			case CookieUI::Options::FindUser:
 			{
 				std::string findUserChoice="";
 				do
@@ -227,6 +228,23 @@ int main()
 				while(findUI->userInteraction(findUserChoice));
 				if(findUserChoice!="")
 					instance->follow(findUserChoice,findUI->getChoices());
+				break;
+			}
+			case CookieUI::Options::SendCookies:
+			{
+				//TODO Implement a send cookies feature
+				//...
+				break;
+			}
+			case CookieUI::Options::SetCookies:
+			{
+				std::cout << "Enter a player name: ";
+				std::string playerName;
+				ReadAndWrite::getInputAsString(playerName);
+				std::cout << "Enter the amount of cookies to set: ";
+				std::string amountOfCookies;
+				ReadAndWrite::getInputAsString(amountOfCookies);
+				instance->setCookies(playerName,std::stod(amountOfCookies));
 				break;
 			}
 		}
