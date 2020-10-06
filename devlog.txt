@@ -30,4 +30,16 @@ Added a master role for accounts. Currently there is no difference between a mas
 Next thing to do is to allow the master account to modify the cookies and rates of other accounts.
 
 Tuesday (10/6/20)
-Added the ability for game masters to modify the amount of cookies an account has
+Added the ability for game masters to modify the amount of cookies an account has.
+
+Now it's time to try and break the program.
+I keep track of the users people follow by separating each name using a comma. So, this doesn't work as intended
+when a username contains a comma.
+
+I have now made it impossible to have a username containing a comma.
+
+My program can act a bit funky when usernames contain colons too due to the way I store followed users.
+
+Colons are now also illegal for usernames.
+
+The last feature I'd like to implement is the ability to send a specified amount of cookies to another user.

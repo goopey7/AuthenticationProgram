@@ -15,6 +15,9 @@
 #else
 #include <unistd.h>
 #define CLEAR_SCREEN system("clear");
+
+void pressEnterToContinue();
+
 #endif
 
 void applyCookiePerSecond(GameInstance* instance)
@@ -100,41 +103,54 @@ int main()
 		//Create account
 		std::string newAccountName;
 
-		// Ask for account name and check for duplicates
-		bool bDuplicateAccName=false;
+		// Ask for account name and check for it's valid
+		bool bBadUserName=false;
 		do
 		{
 			CLEAR_SCREEN
-			bDuplicateAccName=false;
+			bBadUserName=false;
 			std::cout << "Enter in a username for this account: ";
 			ReadAndWrite::getInputAsString(newAccountName);
 			for(std::string s : *database)
 			{
 				if(s=="ID:"+newAccountName)
 				{
-					bDuplicateAccName = true;
-					std::cout << "ERROR: Account Name Already Exists\n";
+					bBadUserName = true;
+					std::cout << "!! Account Name Already Exists !!\n";
+				}
+				else if(newAccountName.find(',')!=std::string::npos)
+				{
+					bBadUserName=true;
+					std::cout << "!! Commas Are Illegal !!\n";
+					break;
+				}
+				else if(newAccountName.find(':')!=std::string::npos)
+				{
+					bBadUserName=true;
+					std::cout << "!! Colons are Illegal !!\n";
+					break;
 				}
 			}
+			if(bBadUserName)
+				pressEnterToContinue();
 		}
-		while (bDuplicateAccName);
+		while (bBadUserName);
 		newAccountName = "ID:"+newAccountName;
 		int accIndex = database->size();
 		database->push_back(newAccountName);
 		database->push_back("{");
-		// Ask for a password TODO Check password complexity
-		std::cout << "Enter in a password for this account: ";
-		std::string clearPassword;
-		ReadAndWrite::getInputAsString(clearPassword);
 
-		// Confirm password
+		// Ask for a password TODO Check password complexity
+		std::string clearPassword;
 		std::string confirmedPass;
 		do
 		{
+			std::cout << "Enter in a password for this account: ";
+			ReadAndWrite::getInputAsString(clearPassword);
 			std::cout << "Confirm password: ";
 			ReadAndWrite::getInputAsString(confirmedPass);
 			if(confirmedPass!=clearPassword)
-				std::cout << "ERROR: Passwords do not match\n";
+				std::cout << "!! Passwords do not match !!\n";
 		}
 		while(confirmedPass!=clearPassword);
 
@@ -178,6 +194,7 @@ int main()
 	int choiceNum=-1;
 	std::thread tCookiePerSecond(applyCookiePerSecond,instance);
 
+	// Enter the CookieUI
 	FindUserUI* findUI = new FindUserUI(instance);
 	while(choiceNum!=CookieUI::Options::Logout)
 	{
@@ -197,7 +214,10 @@ int main()
 			case CookieUI::Options::PurchaseGrandmother:
 			{
 				if(!instance->subtractCookie(8))
+				{
 					std::cout << "!! Not Enough Funds !!\n";
+					pressEnterToContinue();
+				}
 				else
 					instance->addToRate(2.f);
 				break;
@@ -205,7 +225,10 @@ int main()
 			case CookieUI::Options::PurchaseGreatGrandmother:
 			{
 				if(!instance->subtractCookie(200))
+				{
 					std::cout << "!! Not Enough Funds !!\n";
+					pressEnterToContinue();
+				}
 				else
 					instance->addToRate(4.f);
 				break;
@@ -213,7 +236,10 @@ int main()
 			case CookieUI::Options::PurchaseSuperOven:
 			{
 				if(!instance->subtractCookie(10000000))
+				{
 					std::cout << "!! Not Enough Funds !!\n";
+					pressEnterToContinue();
+				}
 				else
 					instance->addToRate(999.f);
 				break;
@@ -244,7 +270,14 @@ int main()
 				std::cout << "Enter the amount of cookies to set: ";
 				std::string amountOfCookies;
 				ReadAndWrite::getInputAsString(amountOfCookies);
-				instance->setCookies(playerName,std::stod(amountOfCookies));
+				try
+				{
+					instance->setCookies(playerName,std::stod(amountOfCookies));
+				}
+				catch (...)
+				{
+
+				}
 				break;
 			}
 		}
@@ -252,4 +285,11 @@ int main()
 	instance->bDestroyed=true;
 	tCookiePerSecond.join();
 	return 0;
+}
+
+void pressEnterToContinue()
+{
+	std::cout << "Press enter to continue";
+	std::string irrelevent;
+	ReadAndWrite::getInputAsString(irrelevent);
 }
