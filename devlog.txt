@@ -49,3 +49,5 @@ I have managed to implement player to player transactions.
 I also realized that I needed to ask for a name as well as a username to login with. So I added that too.
 
 Added a check for password complexity.
+
+All that's left to do now is add in as many comments as possible to try and explain how the code works.

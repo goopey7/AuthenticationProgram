@@ -95,7 +95,10 @@ int main()
 				}
 			}
 			else
+			{
 				std::cout << "ERROR: Invalid Login\n";
+				pressEnterToContinue();
+			}
 		}
 		while(bLoginFail);
 	}
@@ -158,7 +161,6 @@ int main()
 					std::cout << "A Number\nA Special Character\nA Lowercase letter\nAn Uppercase Letter\n";
 					pressEnterToContinue();
 				}
-
 			}
 			while(!isPasswordValid(clearPassword));
 			std::cout << "Confirm password: ";
