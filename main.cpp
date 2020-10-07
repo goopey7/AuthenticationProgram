@@ -17,6 +17,7 @@
 #define CLEAR_SCREEN system("clear");
 
 void pressEnterToContinue();
+bool isPasswordValid(std::string pass);
 
 #endif
 
@@ -140,13 +141,26 @@ int main()
 		database->push_back(newAccountName);
 		database->push_back("{");
 
-		// Ask for a password TODO Check password complexity
+		// Ask for a password
 		std::string clearPassword;
 		std::string confirmedPass;
 		do
 		{
-			std::cout << "Enter in a password for this account: ";
-			ReadAndWrite::getInputAsString(clearPassword);
+			do
+			{
+				std::cout << "Enter in a password for this account: ";
+				ReadAndWrite::getInputAsString(clearPassword);
+				if(!isPasswordValid(clearPassword))
+				{
+					std::cout << "!! Invalid Password !!\n";
+					std::cout << "Password should contain the following:\n";
+					std::cout << "At least 8 characters\n";
+					std::cout << "A Number\nA Special Character\nA Lowercase letter\nAn Uppercase Letter\n";
+					pressEnterToContinue();
+				}
+
+			}
+			while(!isPasswordValid(clearPassword));
 			std::cout << "Confirm password: ";
 			ReadAndWrite::getInputAsString(confirmedPass);
 			if(confirmedPass!=clearPassword)
@@ -303,6 +317,35 @@ int main()
 void pressEnterToContinue()
 {
 	std::cout << "Press enter to continue";
-	std::string irrelevent;
+	std::string irrelevent; // we just need to pause the execution until user hits enter key.
 	ReadAndWrite::getInputAsString(irrelevent);
+}
+
+bool isPasswordValid(std::string pass)
+{
+	if(pass.length()>=8)
+	{
+		char specials[] = {'!','@','#','$','%','^','&','*'};
+		char numbers[] = {'0','1','2','3','4','5','6','7','8','9'};
+		bool bHasSpecialChars=false;
+		bool bHasUpperCaseChars=false;
+		bool bHasNumberChars=false;
+		bool bHasLowercaseChars=false;
+		for(char c : pass)
+		{
+			for (char spec : specials)
+			{
+				if (c == spec)bHasSpecialChars = true;
+			}
+			for(char num : numbers)
+			{
+				if(c==num)bHasNumberChars=true;
+			}
+			if(std::isupper(c))bHasUpperCaseChars=true;
+			if(std::islower(c))bHasLowercaseChars=true;
+		}
+		if(bHasLowercaseChars&&bHasUpperCaseChars&&bHasNumberChars&&bHasSpecialChars)
+			return true;
+	}
+	return false;
 }

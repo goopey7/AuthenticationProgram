@@ -47,3 +47,5 @@ The last feature I'd like to implement is the ability to send a specified amount
 I have managed to implement player to player transactions.
 
 I also realized that I needed to ask for a name as well as a username to login with. So I added that too.
+
+Added a check for password complexity.
