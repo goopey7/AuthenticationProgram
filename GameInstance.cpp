@@ -5,11 +5,11 @@
 #include <sstream>
 #include "GameInstance.h"
 
-GameInstance::GameInstance(int _accIndex,std::vector<std::string>* _database,bool _bIsGameMaster)
+GameInstance::GameInstance(int _accIndex,std::vector<std::string>* _database,bool _bIsGameMaster,std::string _nickname)
 {
 	accIndex=_accIndex;
 	database=_database;
-	refreshDatabase(_bIsGameMaster);
+	refreshDatabase(_bIsGameMaster,_nickname);
 }
 
 inline void GameInstance::refreshFollowingList()
@@ -25,34 +25,42 @@ inline void GameInstance::refreshFollowingList()
 	}
 }
 
-void GameInstance::addCookie(int amountToAdd)
+void GameInstance::addCookie(double amountToAdd)
 {
 	if(amountToAdd>0)
 		numCookies+=amountToAdd;
+	//update database
 	database->at(accIndex+NUM_COOKIE_OFFSET)="cookies:"+std::to_string(numCookies);
 	saveChanges();
 }
 
-bool GameInstance::subtractCookie(int amountToSubtract)
+/*
+ * returns whether or not we successfully took away the specified cookies
+ */
+bool GameInstance::subtractCookie(double amountToSubtract)
 {
+	// if we don't have enough cookies for the transaction
 	if(amountToSubtract>0&&numCookies-amountToSubtract>=0)
 	{
 		numCookies-=amountToSubtract;
+		database->at(accIndex+NUM_COOKIE_OFFSET)="cookies:"+std::to_string(numCookies);
 		saveChanges();
 		return true;
 	}
 	return false;
 }
 
-void GameInstance::addToRate(float amountToAdd)
+void GameInstance::addToRate(double amountToAdd)
 {
 	cookieRate+=amountToAdd;
+	//update database
 	database->at(accIndex+COOKIE_RATE_OFFSET)="rate:"+std::to_string(cookieRate);
 	saveChanges();
 }
 
 void GameInstance::saveChanges()
 {
+	// Commit changes from memory to the file.
 	ReadAndWrite::writeFile(database,"database.txt");
 }
 
@@ -61,12 +69,12 @@ double GameInstance::getNumCookies()
 	return numCookies;
 }
 
-int GameInstance::getCookieRate()
+double GameInstance::getCookieRate()
 {
 	return cookieRate;
 }
 
-int GameInstance::getCookieClickRate()
+double GameInstance::getCookieClickRate()
 {
 	return clickRate;
 }
@@ -86,13 +94,17 @@ double GameInstance::getNumCookies(std::string user)
 	int i=0;
 	for(std::string line : *database)
 	{
-		if(line=="ID:"+user)
-			return std::stod(database->at(i+NUM_COOKIE_OFFSET).substr(8));;
+		if(line=="ID:"+user) // once we get to the specified user's entry
+			//read the amount of cookies they have
+			return std::stod(database->at(i+NUM_COOKIE_OFFSET).substr(8));
 		i++;
 	}
 	return -1;
 }
 
+/*
+ * Get the index of every account in the database
+ */
 std::vector<int>* GameInstance::getAccIndices()
 {
 	std::vector<int>* out=new std::vector<int>;
@@ -110,6 +122,7 @@ std::vector<int>* GameInstance::getAccIndices()
 
 std::string GameInstance::getUserName(int index)
 {
+	// read the database and take off the "ID:" part
 	return database->at(index).substr(3);
 }
 
@@ -118,17 +131,21 @@ int GameInstance::getAccIndex()
 	return accIndex;
 }
 
+/*
+ * Follow a specific player
+ */
 void GameInstance::follow(std::string &choice,std::vector<std::string>* choices)
 {
 	try
 	{
-		int index = std::stoi(choice)-1;
-		std::string followLine=database->at(accIndex + FOLLOWING_OFFSET);
+		// the choice should be an int
+		int index = std::stoi(choice)-1; // subtract one to get the correct index
+		std::string followLine=database->at(accIndex + FOLLOWING_OFFSET); //acquire our follow line
 		if(followLine.at(followLine.size()-1)==':')
-			followLine+=choices->at(index);
+			followLine+=choices->at(index); // add our choice
 		else
-			followLine+=","+choices->at(index);
-		database->at(accIndex+FOLLOWING_OFFSET)=followLine;
+			followLine+=","+choices->at(index); // add our choice after previous username
+		database->at(accIndex+FOLLOWING_OFFSET)=followLine; // modify our follow line
 		saveChanges();
 		refreshFollowingList();
 	}
@@ -143,7 +160,9 @@ bool GameInstance::isGameMaster()
 {
 	return bIsGameMaster;
 }
-
+/*
+ * Sets the specified account's balance to the specified amount
+ */
 void GameInstance::setCookies(std::string user,double amountToSet)
 {
 	int i=0;
@@ -156,10 +175,10 @@ void GameInstance::setCookies(std::string user,double amountToSet)
 		i++;
 	}
 	saveChanges();
-	refreshDatabase(bIsGameMaster);
+	refreshDatabase(bIsGameMaster,"");
 }
 
-void GameInstance::refreshDatabase(bool _bIsGameMaster)
+void GameInstance::refreshDatabase(bool _bIsGameMaster,std::string _nickname)
 {
 	// if there is no cookie entry in the database
 	if(database->at(accIndex+NUM_COOKIE_OFFSET)=="}")
@@ -223,5 +242,23 @@ void GameInstance::refreshDatabase(bool _bIsGameMaster)
 	{
 		bIsGameMaster=std::stoi(database->at(accIndex+PERMISSION_OFFSET).substr(7));
 	}
+
+	// if there is no nickname entry stored in the database
+	if(database->at(accIndex+NICKNAME_OFFSET)=="}")
+	{
+		//insert a database entry of the nickname
+		database->insert(database->begin()+accIndex+NICKNAME_OFFSET,"nickname:"+_nickname);
+		nickname=_nickname;
+	}
+	// parse the nickname from the database entry
+	else
+	{
+		nickname=database->at(accIndex+NICKNAME_OFFSET).substr(9);
+	}
+}
+
+std::string GameInstance::getNickName()
+{
+	return nickname;
 }
 

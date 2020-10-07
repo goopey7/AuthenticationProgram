@@ -22,18 +22,20 @@ private:
 	const int CLICK_RATE_OFFSET=5;
 	const int FOLLOWING_OFFSET=6;
 	const int PERMISSION_OFFSET=7;
+	const int NICKNAME_OFFSET=8;
 	bool bIsGameMaster;
+	std::string nickname;
 public:
 	bool bDestroyed;
-	GameInstance(int _accIndex,std::vector<std::string>* _database,bool _bIsGameMaster);
-	void addCookie(int amountToAdd);
-	bool subtractCookie(int amountToSubtract);
+	GameInstance(int _accIndex,std::vector<std::string>* _database,bool _bIsGameMaster,std::string _nickname);
+	void addCookie(double amountToAdd);
+	bool subtractCookie(double amountToSubtract);
 	void saveChanges();
-	void addToRate(float amountToAdd);
+	void addToRate(double amountToAdd);
 	double getNumCookies(); // get cookies of logged in user
 	double getNumCookies(std::string user);
-	int getCookieRate();
-	int getCookieClickRate();
+	double getCookieRate();
+	double getCookieClickRate();
 	std::vector<std::string>* getFollowing();
 	std::vector<int>* getAccIndices();
 	bool destroyed();
@@ -43,7 +45,8 @@ public:
 	void refreshFollowingList();
 	bool isGameMaster();
 	void setCookies(std::string user,double amountToSet);
-	void refreshDatabase(bool _bIsGameMaster);
+	void refreshDatabase(bool _bIsGameMaster,std::string _nickname);
+	std::string getNickName();
 };
 
 #endif //AUTHENTICATIONPROGRAM_GAMEINSTANCE_H

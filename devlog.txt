@@ -43,3 +43,5 @@ My program can act a bit funky when usernames contain colons too due to the way 
 Colons are now also illegal for usernames.
 
 The last feature I'd like to implement is the ability to send a specified amount of cookies to another user.
+
+I have managed to implement player to player transactions.

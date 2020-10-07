@@ -15,7 +15,8 @@ void CookieUI::display()
 	std::cout << "*                                  Cookie Clicker                              *"<<std::endl;
 	std::cout << "*                                   Sam Collier                                *"<<std::endl;
 	std::cout << "********************************************************************************"<<std::endl;
-	if(instance->isGameMaster())std::cout<<"Welcome Game Master!\n";
+	if(instance->isGameMaster())std::cout<<"Welcome Game Master "<<instance->getNickName()<<"!\n";
+	else std::cout <<"Welcome "<<instance->getNickName()<<"!\n";
 	std::cout << "********* Cookies: " << instance->getNumCookies() << std::endl;
 	std::cout << "********* Cookies per second: "<< instance->getCookieRate() << std::endl;
 	std::cout << "********* Cookies per click: "<< instance->getCookieClickRate()<<std::endl;
@@ -26,7 +27,7 @@ void CookieUI::display()
 	}
 
 	std::cout << "Please select one of the following options:\n";
-	std::cout << "1) Click\n";
+	std::cout << "Enter) Click\n";
 	std::cout << "2) Purchase Grandmother - Add 2 Cookies/Sec - 8 Cookies\n";
 	std::cout << "3) Purchase Great Grandmother - Add 4 Cookies/Sec - 200 cookies\n";
 	std::cout << "4) Purchase Super Oven - Add 999 Cookies/Sec - 10000000 cookies\n";

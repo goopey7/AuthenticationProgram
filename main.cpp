@@ -90,7 +90,7 @@ int main()
 				{
 					bLoginFail=false;
 					std::cout << "*** Login Success ***\n";
-					instance = new GameInstance(accIndex,database,false);
+					instance = new GameInstance(accIndex,database,false,"");
 				}
 			}
 			else
@@ -165,10 +165,15 @@ int main()
 			bIsGameMaster=true;
 		else bIsGameMaster=false;
 
+		std::cout << "Enter your nickname: ";
+		std::string nickname;
+		ReadAndWrite::getInputAsString(nickname);
+
+		// hash our salt and our password with the hashed salt appended to it
 		std::string salt = picosha2::hash256_hex_string(std::to_string(getNanosSinceEpoch()));
 		std::string hashedPass = picosha2::hash256_hex_string(clearPassword+salt);
 
-		// obfuscate the salt and the hashed password
+		// obfuscate the salt and the hashed password in the database
 		std::string databaseEntry="";
 		int strIndex=0;
 		for(int i=0;i<128;i++)
@@ -186,7 +191,7 @@ int main()
 		database->push_back("}");
 		std::cout << "*** Account Created Successfully ***\n";
 		std::cout << "*** Logging in ***\n";
-		instance = new GameInstance(accIndex,database,bIsGameMaster);
+		instance = new GameInstance(accIndex,database,bIsGameMaster,nickname);
 	}
 	instance->saveChanges();
 	CookieUI* gameUI = new CookieUI(instance);
@@ -206,11 +211,6 @@ int main()
 			choiceNum = gameUI->mapInputToEnum(choice);
 		switch(choiceNum)
 		{
-			case CookieUI::Options::Click:
-			{
-				instance->addCookie(instance->getCookieClickRate());
-				break;
-			}
 			case CookieUI::Options::PurchaseGrandmother:
 			{
 				if(!instance->subtractCookie(8))
@@ -258,8 +258,20 @@ int main()
 			}
 			case CookieUI::Options::SendCookies:
 			{
-				//TODO Implement a send cookies feature
-				//...
+				std::cout<<"Please enter the amount of cookies you'd like to send: ";
+				std::string amountOfCookieToSend;
+				ReadAndWrite::getInputAsString(amountOfCookieToSend);
+				double cookiesToSend = std::stod(amountOfCookieToSend);
+				if(instance->getNumCookies()-cookiesToSend>=0)
+				{
+					std::cout<<"Please enter the player name of the recipient: ";
+					std::string recipientName;
+					ReadAndWrite::getInputAsString(recipientName);
+					instance->setCookies(recipientName,
+						  instance->getNumCookies(recipientName)+cookiesToSend);
+					instance->subtractCookie(cookiesToSend);
+					instance->refreshDatabase(false,"");
+				}
 				break;
 			}
 			case CookieUI::Options::SetCookies:
@@ -281,6 +293,7 @@ int main()
 				break;
 			}
 		}
+		instance->addCookie(instance->getCookieClickRate());
 	}
 	instance->bDestroyed=true;
 	tCookiePerSecond.join();
