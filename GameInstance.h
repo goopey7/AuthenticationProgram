@@ -27,7 +27,7 @@ private:
 	std::string nickname;
 public:
 	bool bDestroyed;
-	GameInstance(int _accIndex,std::vector<std::string>* _database,bool _bIsGameMaster,std::string _nickname);
+	GameInstance(int _accIndex,std::vector<std::string>* _database,bool _bIsGameMaster=false,std::string _nickname="");
 	void addCookie(double amountToAdd);
 	bool subtractCookie(double amountToSubtract);
 	void saveChanges();
@@ -45,7 +45,7 @@ public:
 	void refreshFollowingList();
 	bool isGameMaster();
 	void setCookies(std::string user,double amountToSet);
-	void refreshDatabase(bool _bIsGameMaster,std::string _nickname);
+	void refreshDatabase(bool _bIsGameMaster=false,std::string _nickname="");
 	std::string getNickName();
 };
 

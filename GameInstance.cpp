@@ -20,7 +20,9 @@ inline void GameInstance::refreshFollowingList()
 	while(sStream.good()&&users.length()>0)
 	{
 		std::string subStr;
+		// parse through following entries separated by comma
 		std::getline(sStream,subStr,',');
+		// add each user to the following list
 		following->push_back(subStr);
 	}
 }
@@ -99,7 +101,7 @@ double GameInstance::getNumCookies(std::string user)
 			return std::stod(database->at(i+NUM_COOKIE_OFFSET).substr(8));
 		i++;
 	}
-	return -1;
+	return -1; // if we could not find a user in the database return -1
 }
 
 /*
@@ -113,6 +115,7 @@ std::vector<int>* GameInstance::getAccIndices()
 	{
 		if(line.find("ID:")!=std::string::npos)
 		{
+			// if we are on a username line, add the index to the list
 			out->push_back(i);
 		}
 		i++;
@@ -120,6 +123,7 @@ std::vector<int>* GameInstance::getAccIndices()
 	return out;
 }
 
+// given an account index, returns username
 std::string GameInstance::getUserName(int index)
 {
 	// read the database and take off the "ID:" part
@@ -138,7 +142,7 @@ void GameInstance::follow(std::string &choice,std::vector<std::string>* choices)
 {
 	try
 	{
-		// the choice should be an int
+		// we have already checked to see if the choice is an int at this point, so we can feel safe here.
 		int index = std::stoi(choice)-1; // subtract one to get the correct index
 		std::string followLine=database->at(accIndex + FOLLOWING_OFFSET); //acquire our follow line
 		if(followLine.at(followLine.size()-1)==':')
@@ -223,7 +227,7 @@ void GameInstance::refreshDatabase(bool _bIsGameMaster,std::string _nickname)
 		//insert a database entry for cookieRate on the line between the numCookies and the "}"
 		database->insert(database->begin()+accIndex+FOLLOWING_OFFSET,"follows:");
 	}
-		// parse through each user we are following separated by comma. TODO: Don't allow usernames to have commas
+		// parse through each user we are following separated by comma.
 	else
 	{
 		refreshFollowingList();

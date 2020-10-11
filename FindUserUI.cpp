@@ -12,14 +12,17 @@ void FindUserUI::display()
 	std::cout << "********************************************************************************"<<std::endl;
 	std::cout << "Select who you'd like to follow: \n";
 	std::cout << "Press E to exit\n";
+	// if there is more than one account in the database
 	if(instance->getAccIndices()->size()>1)numChoices=1;
 	choices=new std::vector<std::string>;
+	// for every user in the database
 	for(int accIndex : *instance->getAccIndices())
 	{
 		bool bAlreadyFollows=false;
 		std::string user = instance->getUserName(accIndex);
 		for(std::string followedUser : *instance->getFollowing())
 			if(user==followedUser)bAlreadyFollows=true;
+		// if the current index is not us and we don't already follow it, display the account
 		if(accIndex!=instance->getAccIndex()&&!bAlreadyFollows)
 		{
 			std::cout << numChoices << ": ";
@@ -28,6 +31,7 @@ void FindUserUI::display()
 			choices->push_back(user);
 		}
 	}
+	// the for loop would have incremented numChoices after displaying the last element, so we must decrement it.
 	if(numChoices>0)numChoices--;
 }
 
@@ -42,6 +46,7 @@ bool FindUserUI::userInteraction(std::string &choice)
 	}
 	catch (...)
 	{
+		// if we weren't able to get an integer out of the input see if the user was trying to exit.
 		if(choice=="e"||choice=="E")
 			return false;
 		return true;

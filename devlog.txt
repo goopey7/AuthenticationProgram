@@ -51,3 +51,6 @@ I also realized that I needed to ask for a name as well as a username to login w
 Added a check for password complexity.
 
 All that's left to do now is add in as many comments as possible to try and explain how the code works.
+
+Sunday (10/11/20)
+I've added lots of comments. Now all that's left is to wait for my pig latin project feedback before submitting.
