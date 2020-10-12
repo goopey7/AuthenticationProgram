@@ -9,17 +9,18 @@
 #include "CookieUI.h"
 #include "FindUserUI.h"
 
-#ifdef _WIN32_
+#ifdef _WIN32
 #include <Windows.h>
 #define CLEAR_SCREEN system("cls");
+#define WAIT_ONE_SECOND Sleep(1);
 #else
 #include <unistd.h>
 #define CLEAR_SCREEN system("clear");
+#define WAIT_ONE_SECOND sleep(1);
+#endif
 
 void pressEnterToContinue();
 bool isPasswordValid(std::string pass);
-
-#endif
 
 //TODO add logging out and clickRate options
 
@@ -30,7 +31,7 @@ void applyCookiePerSecond(GameInstance* instance)
 	{
 		if(instance->getCookieRate()>0) // if we have a cookie rate
 			instance->addCookie(instance->getCookieRate()); // add cookies
-		sleep(1); // wait one second
+		WAIT_ONE_SECOND // wait one second
 	}
 }
 
@@ -55,7 +56,7 @@ int main()
 	while (mainMenu->userInteraction(choice)); // while user input is invalid
 	// read the database into memory
 	std::vector<std::string>* database = ReadAndWrite::readFile("database.txt");
-	GameInstance* instance;
+	GameInstance* instance=nullptr;
 	if(choice=="1") //we use == for strings in C++ because of operator overloading :-)
 	{
 		//Login
@@ -299,6 +300,7 @@ int main()
 					std::string findUserChoice = "";
 					do
 					{
+						CLEAR_SCREEN
 						findUI->display();
 					}
 					while (findUI->userInteraction(findUserChoice));
