@@ -7,3 +7,4 @@ Debug/*
 *.user
 CppProperties.json
 database.txt
+x64/

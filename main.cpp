@@ -12,7 +12,7 @@
 #ifdef _WIN32 // we are compiling in windows
 #include <Windows.h>
 #define CLEAR_SCREEN system("cls");
-#define WAIT_ONE_SECOND Sleep(1);
+#define WAIT_ONE_SECOND Sleep(1000);
 #else // we are compiling on linux
 #include <unistd.h>
 #define CLEAR_SCREEN system("clear");
@@ -21,8 +21,6 @@
 
 void pressEnterToContinue();
 bool isPasswordValid(std::string pass);
-
-//TODO add logging out and clickRate options
 
 // this function runs on a separate thread adding the player's cookies per second every second.
 void applyCookiePerSecond(GameInstance* instance)
@@ -264,7 +262,7 @@ int main()
 				// I don't feel the need to comment on these cases, enum should make it self explanatory
 				case CookieUI::Options::PurchaseGrandmother:
 				{
-					if (!instance->subtractCookie(8))
+					if (!instance->subtractCookie(1000))
 					{
 						std::cout << "!! Not Enough Funds !!\n";
 						pressEnterToContinue();
@@ -273,9 +271,20 @@ int main()
 						instance->addToRate(2.f);
 					break;
 				}
+				case CookieUI::Options::PurchaseArm:
+				{
+					if (!instance->subtractCookie(2000))
+					{
+						std::cout << "!! Not Enough Funds !!\n";
+						pressEnterToContinue();
+					}
+					else
+						instance->addToClickRate(2);
+					break;
+				}
 				case CookieUI::Options::PurchaseGreatGrandmother:
 				{
-					if (!instance->subtractCookie(200))
+					if (!instance->subtractCookie(6000))
 					{
 						std::cout << "!! Not Enough Funds !!\n";
 						pressEnterToContinue();
@@ -286,7 +295,7 @@ int main()
 				}
 				case CookieUI::Options::PurchaseSuperOven:
 				{
-					if (!instance->subtractCookie(10000000))
+					if (!instance->subtractCookie(100000))
 					{
 						std::cout << "!! Not Enough Funds !!\n";
 						pressEnterToContinue();

@@ -23,6 +23,7 @@ public:
 		Logout,
 		Click,
 		PurchaseGrandmother,
+		PurchaseArm,
 		PurchaseGreatGrandmother,
 		PurchaseSuperOven,
 		FindUser,

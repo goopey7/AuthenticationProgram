@@ -27,7 +27,7 @@ inline void GameInstance::refreshFollowingList()
 	}
 }
 
-void GameInstance::addCookie(double amountToAdd)
+void GameInstance::addCookie(uint64_t amountToAdd)
 {
 	if(amountToAdd>0)
 		numCookies+=amountToAdd;
@@ -52,11 +52,19 @@ bool GameInstance::subtractCookie(double amountToSubtract)
 	return false;
 }
 
-void GameInstance::addToRate(double amountToAdd)
+void GameInstance::addToRate(uint64_t amountToAdd)
 {
 	cookieRate+=amountToAdd;
 	//update database
 	database->at(accIndex+COOKIE_RATE_OFFSET)="rate:"+std::to_string(cookieRate);
+	saveChanges();
+}
+
+void GameInstance::addToClickRate(uint64_t amountToAdd)
+{
+	clickRate += amountToAdd;
+	//update database
+	database->at(accIndex + CLICK_RATE_OFFSET) = "click:" + std::to_string(clickRate);
 	saveChanges();
 }
 
@@ -167,7 +175,7 @@ bool GameInstance::isGameMaster()
 /*
  * Sets the specified account's balance to the specified amount
  */
-void GameInstance::setCookies(std::string user,double amountToSet)
+void GameInstance::setCookies(std::string user,uint64_t amountToSet)
 {
 	int i=0;
 	for(std::string line : *database)
