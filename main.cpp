@@ -9,11 +9,11 @@
 #include "CookieUI.h"
 #include "FindUserUI.h"
 
-#ifdef _WIN32
+#ifdef _WIN32 // we are compiling in windows
 #include <Windows.h>
 #define CLEAR_SCREEN system("cls");
 #define WAIT_ONE_SECOND Sleep(1);
-#else
+#else // we are compiling on linux
 #include <unistd.h>
 #define CLEAR_SCREEN system("clear");
 #define WAIT_ONE_SECOND sleep(1);
