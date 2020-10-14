@@ -264,6 +264,7 @@ int main()
 				// I don't feel the need to comment on these cases, enum should make it self explanatory
 				case CookieUI::Options::PurchaseGrandmother:
 				{
+					// subtractCookie returns false if we don't have enough cookies
 					if (!instance->subtractCookie(1000))
 					{
 						std::cout << "!! Not Enough Funds !!\n";
@@ -321,6 +322,9 @@ int main()
 				}
 				case CookieUI::Options::SendCookies:
 				{
+					std::cout << "Please enter the player name of the recipient: ";
+					std::string recipientName;
+					ReadAndWrite::getInputAsString(recipientName);
 					std::cout << "Please enter the amount of cookies you'd like to send: ";
 					std::string amountOfCookieToSend;
 					ReadAndWrite::getInputAsString(amountOfCookieToSend);
@@ -332,11 +336,8 @@ int main()
 					}
 					catch (...){}
 					// if we actually have enough cookies to do the transaction
-					if (instance->getNumCookies() - cookiesToSend >= 0)
+					if(instance->getNumCookies() - cookiesToSend >= 0)
 					{
-						std::cout << "Please enter the player name of the recipient: ";
-						std::string recipientName;
-						ReadAndWrite::getInputAsString(recipientName);
 						// set the recipient's cookies to be equal to their cookies + cookies sent
 						instance->setCookies(recipientName,
 											 instance->getNumCookies(recipientName) + cookiesToSend);
@@ -358,8 +359,7 @@ int main()
 					{
 						instance->setCookies(playerName, std::stod(amountOfCookies));
 					}
-					catch (...)
-					{}
+					catch (...){}
 					break;
 				}
 			}
