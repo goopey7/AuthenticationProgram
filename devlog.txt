@@ -21,7 +21,9 @@ I added the ability to keep track of how many cookies other users have, so that 
 Monday (10/5/20)
 Implemented a way to follow users using the program. Previously the usernames had to be manually inserted into the database.
 
-Added a salt to our hashed passwords. It works by first getting the nanoseconds since epoch, and generating a SHA-256 hash from the nanoseconds. In the database, the password line is the first 32 characters of the salt + (the hash of the password+salt) + last 32 characters of the salt. 
+Added a salt to our hashed passwords. It works by first getting the nanoseconds since epoch, and generating a SHA-256
+hash from the nanoseconds.
+In the database, the password line is the first 32 characters of the salt + (the hash of the password+salt) + last 32 characters of the salt.
 
 I just changed up the way I obfuscate my salt. Now every even character of the database entry is a part of the hashed password.
 Every odd character is part of the salt.
@@ -54,3 +56,8 @@ All that's left to do now is add in as many comments as possible to try and expl
 
 Sunday (10/11/20)
 I've added lots of comments. Now all that's left is to wait for my pig latin project feedback before submitting.
+
+Wednesday (10/14/20)
+Got my pig latin project back. Looks like it went very well, so I'm pretty much ready to submit at this point.
+I made the main method recursive, so now the program does not exit when user logs out. The only way to exit is via the
+main menu.

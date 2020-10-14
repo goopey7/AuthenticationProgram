@@ -49,24 +49,26 @@ int main()
 	do
 	{
 		choice="";
+		CLEAR_SCREEN
 		mainMenu->display();
 	}
 	while (mainMenu->userInteraction(choice)); // while user input is invalid
 	// read the database into memory
 	std::vector<std::string>* database = ReadAndWrite::readFile("database.txt");
 	GameInstance* instance=nullptr;
+	if(choice=="0")return 0; // exit program
 	if(choice=="1") //we use == for strings in C++ because of operator overloading :-)
 	{
 		//Login
 		bool bLoginFail=true;
 		do
 		{
-			CLEAR_SCREEN
-			std::string username;
+			CLEAR_SCREEN // since it's a macro, we don't need a semicolon :-)
 			std::cout << "Enter username: ";
-			ReadAndWrite::getInputAsString(username);
-			std::string password;
+			std::string username;
+			ReadAndWrite::getInputAsString(username); // passed by reference
 			std::cout << "Enter password: ";
+			std::string password;
 			ReadAndWrite::getInputAsString(password);
 			int accIndex=-1; // the index of the line in the file (lineNumber - 1)
 			for(int i=0;i<database->size();i++)
@@ -368,7 +370,14 @@ int main()
 	// if we are logging out
 	instance->bDestroyed=true; // this will alert the thread to stop
 	tCookiePerSecond.join(); // wait for thread to finish
-	return 0; // exit
+
+	// garbage collection
+	delete instance;
+	delete gameUI;
+	delete findUI;
+
+	// return to main menu
+	return main();
 }
 
 void pressEnterToContinue()
