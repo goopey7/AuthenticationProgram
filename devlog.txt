@@ -58,6 +58,12 @@ Sunday (10/11/20)
 I've added lots of comments. Now all that's left is to wait for my pig latin project feedback before submitting.
 
 Wednesday (10/14/20)
-Got my pig latin project back. Looks like it went very well, so I'm pretty much ready to submit at this point.
+Got my pig latin project back. Looks like it went very well! So I'm pretty much ready to submit at this point.
 I made the main method recursive, so now the program does not exit when user logs out. The only way to exit is via the
 main menu.
+
+Last thing I want to do before submitting is to just make sure it actually compiles on Windows.
+
+Also, you may notice that spaces are allowed in usernames. For the purposes of this project, I think that's ok.
+It won't break the program in any way, so if you really wanted a username with a space in it, this is the program for
+you!
