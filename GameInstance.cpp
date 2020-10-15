@@ -5,7 +5,7 @@
 #include <sstream>
 #include "GameInstance.h"
 
-GameInstance::GameInstance(int _accIndex,std::vector<std::string>* _database,bool _bIsGameMaster,std::string _nickname)
+GameInstance::GameInstance(size_t _accIndex,std::vector<std::string>* _database,bool _bIsGameMaster,std::string _nickname)
 {
 	accIndex=_accIndex;
 	database=_database;
@@ -39,7 +39,7 @@ void GameInstance::addCookie(uint64_t amountToAdd)
 /*
  * returns whether or not we successfully took away the specified cookies
  */
-bool GameInstance::subtractCookie(double amountToSubtract)
+bool GameInstance::subtractCookie(uint64_t amountToSubtract)
 {
 	// if we don't have enough cookies for the transaction
 	if(amountToSubtract>0&&numCookies-amountToSubtract>=0)
@@ -74,17 +74,17 @@ void GameInstance::saveChanges()
 	ReadAndWrite::writeFile(database,"database.txt");
 }
 
-double GameInstance::getNumCookies()
+uint64_t GameInstance::getNumCookies()
 {
 	return numCookies;
 }
 
-double GameInstance::getCookieRate()
+uint64_t GameInstance::getCookieRate()
 {
 	return cookieRate;
 }
 
-double GameInstance::getCookieClickRate()
+uint64_t GameInstance::getCookieClickRate()
 {
 	return clickRate;
 }
@@ -99,14 +99,14 @@ std::vector<std::string>* GameInstance::getFollowing()
 	return following;
 }
 
-double GameInstance::getNumCookies(std::string user)
+uint64_t GameInstance::getNumCookies(std::string user)
 {
-	int i=0;
+	size_t i=0;
 	for(std::string line : *database)
 	{
 		if(line=="ID:"+user) // once we get to the specified user's entry
 			//read the amount of cookies they have
-			return std::stod(database->at(i+NUM_COOKIE_OFFSET).substr(8));
+			return std::stoll(database->at(i+NUM_COOKIE_OFFSET).substr(8));
 		i++;
 	}
 	return -1; // if we could not find a user in the database return -1
@@ -138,7 +138,7 @@ std::string GameInstance::getUserName(int index)
 	return database->at(index).substr(3);
 }
 
-int GameInstance::getAccIndex()
+size_t GameInstance::getAccIndex()
 {
 	return accIndex;
 }
@@ -177,7 +177,7 @@ bool GameInstance::isGameMaster()
  */
 void GameInstance::setCookies(std::string user,uint64_t amountToSet)
 {
-	int i=0;
+	size_t i=0;
 	for(std::string line : *database)
 	{
 		if(line=="ID:"+user)
@@ -202,19 +202,19 @@ void GameInstance::refreshDatabase(bool _bIsGameMaster,std::string _nickname)
 	}
 		// parse the cookie entry into numCookies
 	else
-		numCookies=std::stod(database->at(accIndex+NUM_COOKIE_OFFSET).substr(8));
+		numCookies=std::stoll(database->at(accIndex+NUM_COOKIE_OFFSET).substr(8));
 
 	// if there is no cookie rate stored in the database
 	if(database->at(accIndex+COOKIE_RATE_OFFSET)=="}")
 	{
-		cookieRate=0.f;
+		cookieRate=0;
 
 		//insert a database entry for cookieRate on the line between the numCookies and the line afterwards
 		database->insert(database->begin()+accIndex+COOKIE_RATE_OFFSET,"rate:"+std::to_string(cookieRate));
 	}
 		// parse the rate entry into cookieRate
 	else
-		cookieRate=std::stof(database->at(accIndex+COOKIE_RATE_OFFSET).substr(5));
+		cookieRate=std::stoll(database->at(accIndex+COOKIE_RATE_OFFSET).substr(5));
 
 	// if there is no click rate stored in the database
 	if(database->at(accIndex+CLICK_RATE_OFFSET)=="}")

@@ -70,7 +70,7 @@ int main()
 			std::cout << "Enter password: ";
 			std::string password;
 			ReadAndWrite::getInputAsString(password);
-			int accIndex=-1; // the index of the line in the file (lineNumber - 1)
+			size_t accIndex=-1; // the index of the line in the file (lineNumber - 1)
 			for(int i=0;i<database->size();i++)
 			{
 				// if we find the username entered, we set our accIndex to the line in the database with the username
@@ -160,7 +160,7 @@ int main()
 		// after this point we have a valid account name.
 		newAccountName = "ID:"+newAccountName;
 		//we are going to add a new line to the database, so this is going to be the new index.
-		int accIndex = database->size();
+		size_t accIndex = database->size();
 		database->push_back(newAccountName);
 		database->push_back("{");
 
@@ -271,7 +271,7 @@ int main()
 						pressEnterToContinue();
 					}
 					else
-						instance->addToRate(2.f);
+						instance->addToRate(2);
 					break;
 				}
 				case CookieUI::Options::PurchaseArm:
@@ -293,7 +293,7 @@ int main()
 						pressEnterToContinue();
 					}
 					else
-						instance->addToRate(4.f);
+						instance->addToRate(4);
 					break;
 				}
 				case CookieUI::Options::PurchaseSuperOven:
@@ -304,7 +304,7 @@ int main()
 						pressEnterToContinue();
 					}
 					else
-						instance->addToRate(999.f);
+						instance->addToRate(999);
 					break;
 				}
 				case CookieUI::Options::FindUser:
@@ -328,11 +328,11 @@ int main()
 					std::cout << "Please enter the amount of cookies you'd like to send: ";
 					std::string amountOfCookieToSend;
 					ReadAndWrite::getInputAsString(amountOfCookieToSend);
-					double cookiesToSend = 0.0;
+					uint64_t cookiesToSend = 0;
 					try
 					{
 						// read in string as double
-						cookiesToSend = std::stod(amountOfCookieToSend);
+						cookiesToSend = std::stoll(amountOfCookieToSend);
 					}
 					catch (...){}
 					// if we actually have enough cookies to do the transaction
@@ -357,7 +357,7 @@ int main()
 					ReadAndWrite::getInputAsString(amountOfCookies);
 					try
 					{
-						instance->setCookies(playerName, std::stod(amountOfCookies));
+						instance->setCookies(playerName, std::stoll(amountOfCookies));
 					}
 					catch (...){}
 					break;

@@ -67,3 +67,7 @@ Last thing I want to do before submitting is to just make sure it actually compi
 Also, you may notice that spaces are allowed in usernames. For the purposes of this project, I think that's ok.
 It won't break the program in any way, so if you really wanted a username with a space in it, this is the program for
 you!
+
+Managed to successfully compile and run the program properly in Windows. I am not testing my code on OSX, but I think it would probably work.
+I compiled the program in Visual Studio 2019 with the Desktop C++ package from the installer. That should be all you'd need. My program does make use
+of the Windows.h header file. As far as compiling on Linux goes, I had no issues compiling with g++, and the IDE I used for the project was CLion.
