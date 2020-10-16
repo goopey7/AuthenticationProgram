@@ -68,9 +68,10 @@ Also, you may notice that spaces are allowed in usernames. For the purposes of t
 It won't break the program in any way, so if you really wanted a username with a space in it, this is the program for
 you!
 
-Managed to successfully compile and run the program properly in Windows. I am not testing my code on OSX, but I think it would probably work.
-I compiled the program in Visual Studio 2019 with the Desktop C++ package from the installer. That should be all you'd need. My program does make use
-of the Windows.h header file. As far as compiling on Linux goes, I had no issues compiling with g++, and the IDE I used for the project was CLion.
+Managed to successfully compile and run the program properly in Windows. I am not testing my code on OSX, but I think it
+would probably work. I compiled the program in Visual Studio 2019 with the Desktop C++ package from the installer. That
+should be all you'd need. My program does make use of the Windows.h header file.
+As far as compiling on Linux goes, I had no issues compiling it with g++, and the IDE I used for the project was CLion.
 
 Thursday (10/15/20)
 I unsubmitted for two reasons. Firstly, after failing to login the user is not sent back to the main menu, and also my
@@ -81,4 +82,8 @@ subtract cookie method checked to see if we had enough cookies or not. If we did
 about 18,446,744,073,709,551,615 cookies, so I solved this problem by using a for loop to see if we ever reach that value
 while subtracting every iteration.
 
+Did a refactor and shaved main.cpp down by 124 lines.
+
+I think looking back I probably should have made an Authenticator class, but I also would like to go to sleep.
+Sorry main, looks like you're going to have to be responsible for logging people in.
 

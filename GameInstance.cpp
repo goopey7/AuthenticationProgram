@@ -4,6 +4,8 @@
 
 #include <sstream>
 #include "GameInstance.h"
+#include "FindUserUI.h"
+#include "CookieUI.h"
 
 GameInstance::GameInstance(size_t _accIndex,std::vector<std::string>* _database,bool _bIsGameMaster,std::string _nickname)
 {
@@ -192,6 +194,131 @@ void GameInstance::setCookies(std::string user,uint64_t amountToSet)
 	}
 	saveChanges();
 	refreshDatabase(bIsGameMaster,"");
+}
+
+void GameInstance::play(std::string &choice, CookieUI*&gameUI, FindUserUI*&findUI, void(*enterToCont)())
+{
+	gameUI= new CookieUI(this);
+	findUI= new FindUserUI(this);// Enter the CookieUI
+	int choiceNum=-1;
+	// while the user has not decided to logout
+	while(choiceNum != CookieUI::Logout)
+	{
+		CLEAR_SCREEN
+				choice=""; //reset choice after iteration
+		gameUI->display();
+		choiceNum=-1; //reset choiceNum after iteration
+		if(!gameUI->userInteraction(choice)) // if our input is valid
+		{
+			choiceNum = gameUI->mapInputToEnum(choice); // get our enum
+			switch (choiceNum) //switch on our choice after valid interaction
+			{
+				// I don't feel the need to comment on these cases, enum should make it self explanatory
+				case CookieUI::PurchaseGrandmother:
+				{
+					// subtractCookie returns false if we don't have enough cookies
+					if (!subtractCookie(1000))
+					{
+						std::cout << "!! Not Enough Funds !!\n";
+						enterToCont();
+					}
+					else
+						addToRate(2);
+					break;
+				}
+				case CookieUI::PurchaseArm:
+				{
+					if (!subtractCookie(2000))
+					{
+						std::cout << "!! Not Enough Funds !!\n";
+						enterToCont();
+					}
+					else
+						addToClickRate(2);
+					break;
+				}
+				case CookieUI::PurchaseGreatGrandmother:
+				{
+					if (!subtractCookie(6000))
+					{
+						std::cout << "!! Not Enough Funds !!\n";
+						enterToCont();
+					}
+					else
+						addToRate(4);
+					break;
+				}
+				case CookieUI::PurchaseSuperOven:
+				{
+					if (!subtractCookie(100000))
+					{
+						std::cout << "!! Not Enough Funds !!\n";
+						enterToCont();
+					}
+					else
+						addToRate(999);
+					break;
+				}
+				case CookieUI::FindUser:
+				{
+					std::string findUserChoice = "";
+					do
+					{
+						CLEAR_SCREEN
+						findUI->display();
+					}
+					while (findUI->userInteraction(findUserChoice));
+					if (findUserChoice != "")
+						follow(findUserChoice, findUI->getChoices());
+					break;
+				}
+				case CookieUI::SendCookies:
+				{
+					std::cout << "Please enter the player name of the recipient: ";
+					std::string recipientName;
+					ReadAndWrite::getInputAsString(recipientName);
+					std::cout << "Please enter the amount of cookies you'd like to send: ";
+					std::string amountOfCookieToSend;
+					ReadAndWrite::getInputAsString(amountOfCookieToSend);
+					uint64_t cookiesToSend = 0;
+					try
+					{
+						// read in string as double
+						cookiesToSend = std::stoll(amountOfCookieToSend);
+					}
+					catch (...){}
+					// if we actually have enough cookies to do the transaction
+					if(getNumCookies() - cookiesToSend >= 0)
+					{
+						// set the recipient's cookies to be equal to their cookies + cookies sent
+						setCookies(recipientName,
+											 getNumCookies(recipientName) + cookiesToSend);
+						// take away cookies sent from player making the transaction
+						subtractCookie(cookiesToSend);
+						refreshDatabase();
+					}
+					break;
+				}
+				case CookieUI::SetCookies:
+				{
+					std::cout << "Enter a player name: ";
+					std::string playerName;
+					ReadAndWrite::getInputAsString(playerName);
+					std::cout << "Enter the amount of cookies to set: ";
+					std::string amountOfCookies;
+					ReadAndWrite::getInputAsString(amountOfCookies);
+					try
+					{
+						setCookies(playerName, std::stoll(amountOfCookies));
+					}
+					catch (...){}
+					break;
+				}
+			}
+		}
+		// every time we get here, the player must have hit the enter key, so we add a cookie
+		addCookie(getCookieClickRate());
+	}
 }
 
 void GameInstance::refreshDatabase(bool _bIsGameMaster,std::string _nickname)

@@ -7,6 +7,18 @@
 #include <iostream>
 #include <vector>
 #include "ReadAndWrite.h"
+#include "CookieUI.h"
+#include "FindUserUI.h"
+
+#ifdef _WIN32 // we are compiling in windows
+#include <Windows.h>
+#define CLEAR_SCREEN system("cls");
+#define WAIT_ONE_SECOND Sleep(1000);
+#else // we are compiling on linux
+#include <unistd.h>
+#define CLEAR_SCREEN system("clear");
+#define WAIT_ONE_SECOND sleep(1);
+#endif
 
 class GameInstance
 {
@@ -48,6 +60,13 @@ public:
 	void setCookies(std::string user,uint64_t amountToSet);
 	void refreshDatabase(bool _bIsGameMaster=false,std::string _nickname="");
 	std::string getNickName();
+
+	// yeah passing a press enter to continue method probably isn't the way to go.
+	// But I don't want to dedicate a whole class for that one method either
+	// Or copy and paste the method into here as well. Because I do use it while main has a nullptr to this class.
+	// I guess I'm in a bit of a pickle
+	void play(std::string &choice,class CookieUI*&gameUI,class FindUserUI*&findUI,
+		   void(*entertoContinue)());
 };
 
 #endif //AUTHENTICATIONPROGRAM_GAMEINSTANCE_H

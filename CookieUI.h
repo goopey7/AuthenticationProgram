@@ -12,7 +12,7 @@
 class CookieUI : MenuInterface
 {
 private:
-	GameInstance* instance;
+	class GameInstance* instance;
 public:
 	CookieUI(GameInstance* _instance);
 	void display() override;

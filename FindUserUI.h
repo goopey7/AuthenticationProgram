@@ -11,7 +11,7 @@
 class FindUserUI : MenuInterface
 {
 private:
-	GameInstance* instance;
+	class GameInstance* instance;
 	std::vector<std::string>* choices;
 	int numChoices=0;
 public:
