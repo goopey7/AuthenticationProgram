@@ -41,15 +41,19 @@ void GameInstance::addCookie(uint64_t amountToAdd)
  */
 bool GameInstance::subtractCookie(uint64_t amountToSubtract)
 {
-	// if we don't have enough cookies for the transaction
-	if(amountToSubtract>0&&numCookies-amountToSubtract>=0)
+	//we have to check and prevent overflow, since we are dealing with unsigned long long
+	//if we overflow, then we don't have enough cookies
+	uint64_t numCookiesCopy=numCookies;
+	for(uint64_t i=0;i<amountToSubtract;i++)
 	{
-		numCookies-=amountToSubtract;
-		database->at(accIndex+NUM_COOKIE_OFFSET)="cookies:"+std::to_string(numCookies);
-		saveChanges();
-		return true;
+		numCookiesCopy--;
+		if(numCookiesCopy==UINT64_MAX)
+			return false;
 	}
-	return false;
+	numCookies-=amountToSubtract;
+	database->at(accIndex+NUM_COOKIE_OFFSET)="cookies:"+std::to_string(numCookies);
+	saveChanges();
+	return true;
 }
 
 void GameInstance::addToRate(uint64_t amountToAdd)

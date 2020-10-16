@@ -111,6 +111,7 @@ int main()
 			{
 				std::cout << "ERROR: Invalid Login\n";
 				pressEnterToContinue();
+				return main();
 			}
 		}
 		while(bLoginFail);

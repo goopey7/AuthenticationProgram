@@ -71,3 +71,14 @@ you!
 Managed to successfully compile and run the program properly in Windows. I am not testing my code on OSX, but I think it would probably work.
 I compiled the program in Visual Studio 2019 with the Desktop C++ package from the installer. That should be all you'd need. My program does make use
 of the Windows.h header file. As far as compiling on Linux goes, I had no issues compiling with g++, and the IDE I used for the project was CLion.
+
+Thursday (10/15/20)
+I unsubmitted for two reasons. Firstly, after failing to login the user is not sent back to the main menu, and also my
+main method is a few hundred lines long, so I'd like to shave it down and extract some methods out of it.
+
+Also, after switching to unsigned int so that I can store the largest amount of cookies possible, I had to change how my
+subtract cookie method checked to see if we had enough cookies or not. If we did not, then we'd overflow and end up with
+about 18,446,744,073,709,551,615 cookies, so I solved this problem by using a for loop to see if we ever reach that value
+while subtracting every iteration.
+
+
