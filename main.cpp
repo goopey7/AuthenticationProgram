@@ -27,6 +27,8 @@ void applyCookiePerSecond(GameInstance* instance)
 
 //inline functions don't clog up the stack, instead the compiler just inserts the definition of the function when called
 // returns an unsigned long long (max value: 18,446,744,073,709,551,615)
+// I dare you to to change your system time to the end of the universe as we know it.
+// Just so that you can break my program. I feel like that's something you may potentially do (^_−)
 inline uint64_t getNanosSinceEpoch()
 {
 	// we use system clock because we want unix epoch, not time since program has been opened
